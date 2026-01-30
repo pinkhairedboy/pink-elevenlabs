@@ -146,11 +146,7 @@ func textToSpeech(text, outputPath, voiceID, format string, stability, similarit
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("xi-api-key", apiKey)
 
-	otel.Info(context.Background(), "tts_request", map[string]any{
-		"voice_id": voiceID,
-		"format":   format,
-		"text_len": len(text),
-	})
+	otel.Info(context.Background(), "tts_request", otel.Attr{"voice_id", voiceID}, otel.Attr{"format", format}, otel.Attr{"text_len", len(text)})
 
 	client := &http.Client{Timeout: 120 * time.Second}
 	resp, err := client.Do(req)
@@ -179,7 +175,7 @@ func textToSpeech(text, outputPath, voiceID, format string, stability, similarit
 		return fmt.Errorf("failed to write output: %w", err)
 	}
 
-	otel.Info(context.Background(), "tts_complete", map[string]any{"output": outputPath})
+	otel.Info(context.Background(), "tts_complete", otel.Attr{"output", outputPath})
 	return nil
 }
 
@@ -222,11 +218,7 @@ func voiceChange(inputPath, outputPath, voiceID, format string) error {
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	req.Header.Set("xi-api-key", apiKey)
 
-	otel.Info(context.Background(), "voice_change_request", map[string]any{
-		"voice_id": voiceID,
-		"format":   format,
-		"input":    inputPath,
-	})
+	otel.Info(context.Background(), "voice_change_request", otel.Attr{"voice_id", voiceID}, otel.Attr{"format", format}, otel.Attr{"input", inputPath})
 
 	client := &http.Client{Timeout: 120 * time.Second}
 	resp, err := client.Do(req)
@@ -255,7 +247,7 @@ func voiceChange(inputPath, outputPath, voiceID, format string) error {
 		return fmt.Errorf("failed to write output: %w", err)
 	}
 
-	otel.Info(context.Background(), "voice_change_complete", map[string]any{"output": outputPath})
+	otel.Info(context.Background(), "voice_change_complete", otel.Attr{"output", outputPath})
 	return nil
 }
 
@@ -333,7 +325,7 @@ func cmdTTS(args []string) error {
 
 	err := textToSpeech(text, *output, voiceID, *format, *stability, *similarityBoost, *style, *speed, !*noSpeakerBoost)
 	if err != nil {
-		otel.Error(context.Background(), "tts_failed", map[string]any{"error": err.Error()})
+		otel.Error(context.Background(), "tts_failed", otel.Attr{"error", err.Error()})
 		return err
 	}
 
@@ -371,7 +363,7 @@ func cmdVoice(args []string) error {
 
 	err := voiceChange(inputPath, *output, voiceID, *format)
 	if err != nil {
-		otel.Error(context.Background(), "voice_change_failed", map[string]any{"error": err.Error()})
+		otel.Error(context.Background(), "voice_change_failed", otel.Attr{"error", err.Error()})
 		return err
 	}
 
