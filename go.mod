@@ -8,7 +8,7 @@ require github.com/joho/godotenv v1.5.1 // indirect
 
 require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/pink-tools/pink-core v1.6.0
+	github.com/pink-tools/pink-core v1.7.0
 	go.opentelemetry.io/otel v1.39.0 // indirect
 	go.opentelemetry.io/otel/trace v1.39.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.9.0 // indirect
