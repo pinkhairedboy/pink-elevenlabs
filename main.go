@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/pink-tools/pink-core"
-	"github.com/pink-tools/pink-otel"
+	"github.com/pink-tools/pink-core/log"
 )
 
 var version = "dev"
@@ -49,7 +49,7 @@ func getDefaultVoiceOutput() string {
 func getAPIKey() string {
 	key := os.Getenv("ELEVENLABS_API_KEY")
 	if key == "" {
-		otel.Error(context.Background(), "ELEVENLABS_API_KEY not found")
+		log.Error(context.Background(), "ELEVENLABS_API_KEY not found")
 		fmt.Fprintln(os.Stderr, "ERROR: ELEVENLABS_API_KEY not found in environment")
 		os.Exit(1)
 	}
@@ -59,7 +59,7 @@ func getAPIKey() string {
 func getTTSVoiceID() string {
 	id := os.Getenv("ELEVENLABS_TTS_VOICE_ID")
 	if id == "" {
-		otel.Error(context.Background(), "ELEVENLABS_TTS_VOICE_ID not found")
+		log.Error(context.Background(), "ELEVENLABS_TTS_VOICE_ID not found")
 		fmt.Fprintln(os.Stderr, "ERROR: ELEVENLABS_TTS_VOICE_ID not found in environment")
 		os.Exit(1)
 	}
@@ -69,7 +69,7 @@ func getTTSVoiceID() string {
 func getVoiceChangeID() string {
 	id := os.Getenv("ELEVENLABS_VOICE_CHANGE_ID")
 	if id == "" {
-		otel.Error(context.Background(), "ELEVENLABS_VOICE_CHANGE_ID not found")
+		log.Error(context.Background(), "ELEVENLABS_VOICE_CHANGE_ID not found")
 		fmt.Fprintln(os.Stderr, "ERROR: ELEVENLABS_VOICE_CHANGE_ID not found in environment")
 		os.Exit(1)
 	}
@@ -146,7 +146,7 @@ func textToSpeech(text, outputPath, voiceID, format string, stability, similarit
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("xi-api-key", apiKey)
 
-	otel.Info(context.Background(), "tts_request", otel.Attr{"voice_id", voiceID}, otel.Attr{"format", format}, otel.Attr{"text_len", len(text)})
+	log.Info(context.Background(), "tts_request", log.Attr{"voice_id", voiceID}, log.Attr{"format", format}, log.Attr{"text_len", len(text)})
 
 	client := &http.Client{Timeout: 120 * time.Second}
 	resp, err := client.Do(req)
@@ -175,7 +175,7 @@ func textToSpeech(text, outputPath, voiceID, format string, stability, similarit
 		return fmt.Errorf("failed to write output: %w", err)
 	}
 
-	otel.Info(context.Background(), "tts_complete", otel.Attr{"output", outputPath})
+	log.Info(context.Background(), "tts_complete", log.Attr{"output", outputPath})
 	return nil
 }
 
@@ -218,7 +218,7 @@ func voiceChange(inputPath, outputPath, voiceID, format string) error {
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	req.Header.Set("xi-api-key", apiKey)
 
-	otel.Info(context.Background(), "voice_change_request", otel.Attr{"voice_id", voiceID}, otel.Attr{"format", format}, otel.Attr{"input", inputPath})
+	log.Info(context.Background(), "voice_change_request", log.Attr{"voice_id", voiceID}, log.Attr{"format", format}, log.Attr{"input", inputPath})
 
 	client := &http.Client{Timeout: 120 * time.Second}
 	resp, err := client.Do(req)
@@ -247,7 +247,7 @@ func voiceChange(inputPath, outputPath, voiceID, format string) error {
 		return fmt.Errorf("failed to write output: %w", err)
 	}
 
-	otel.Info(context.Background(), "voice_change_complete", otel.Attr{"output", outputPath})
+	log.Info(context.Background(), "voice_change_complete", log.Attr{"output", outputPath})
 	return nil
 }
 
@@ -325,7 +325,7 @@ func cmdTTS(args []string) error {
 
 	err := textToSpeech(text, *output, voiceID, *format, *stability, *similarityBoost, *style, *speed, !*noSpeakerBoost)
 	if err != nil {
-		otel.Error(context.Background(), "tts_failed", otel.Attr{"error", err.Error()})
+		log.Error(context.Background(), "tts_failed", log.Attr{"error", err.Error()})
 		return err
 	}
 
@@ -363,7 +363,7 @@ func cmdVoice(args []string) error {
 
 	err := voiceChange(inputPath, *output, voiceID, *format)
 	if err != nil {
-		otel.Error(context.Background(), "voice_change_failed", otel.Attr{"error", err.Error()})
+		log.Error(context.Background(), "voice_change_failed", log.Attr{"error", err.Error()})
 		return err
 	}
 
