@@ -146,7 +146,7 @@ func textToSpeech(text, outputPath, voiceID, format string, stability, similarit
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("xi-api-key", apiKey)
 
-	log.Info(context.Background(), "tts_request", log.Attr{"voice_id", voiceID}, log.Attr{"format", format}, log.Attr{"text_len", len(text)})
+	log.Info(context.Background(), "tts_request", log.Attr{K: "voice_id", V: voiceID}, log.Attr{K: "format", V: format}, log.Attr{K: "text_len", V: len(text)})
 
 	client := &http.Client{Timeout: 120 * time.Second}
 	resp, err := client.Do(req)
@@ -175,7 +175,7 @@ func textToSpeech(text, outputPath, voiceID, format string, stability, similarit
 		return fmt.Errorf("failed to write output: %w", err)
 	}
 
-	log.Info(context.Background(), "tts_complete", log.Attr{"output", outputPath})
+	log.Info(context.Background(), "tts_complete", log.Attr{K: "output", V: outputPath})
 	return nil
 }
 
@@ -218,7 +218,7 @@ func voiceChange(inputPath, outputPath, voiceID, format string) error {
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	req.Header.Set("xi-api-key", apiKey)
 
-	log.Info(context.Background(), "voice_change_request", log.Attr{"voice_id", voiceID}, log.Attr{"format", format}, log.Attr{"input", inputPath})
+	log.Info(context.Background(), "voice_change_request", log.Attr{K: "voice_id", V: voiceID}, log.Attr{K: "format", V: format}, log.Attr{K: "input", V: inputPath})
 
 	client := &http.Client{Timeout: 120 * time.Second}
 	resp, err := client.Do(req)
@@ -247,7 +247,7 @@ func voiceChange(inputPath, outputPath, voiceID, format string) error {
 		return fmt.Errorf("failed to write output: %w", err)
 	}
 
-	log.Info(context.Background(), "voice_change_complete", log.Attr{"output", outputPath})
+	log.Info(context.Background(), "voice_change_complete", log.Attr{K: "output", V: outputPath})
 	return nil
 }
 
@@ -325,7 +325,7 @@ func cmdTTS(args []string) error {
 
 	err := textToSpeech(text, *output, voiceID, *format, *stability, *similarityBoost, *style, *speed, !*noSpeakerBoost)
 	if err != nil {
-		log.Error(context.Background(), "tts_failed", log.Attr{"error", err.Error()})
+		log.Error(context.Background(), "tts_failed", log.Attr{K: "error", V: err.Error()})
 		return err
 	}
 
@@ -363,7 +363,7 @@ func cmdVoice(args []string) error {
 
 	err := voiceChange(inputPath, *output, voiceID, *format)
 	if err != nil {
-		log.Error(context.Background(), "voice_change_failed", log.Attr{"error", err.Error()})
+		log.Error(context.Background(), "voice_change_failed", log.Attr{K: "error", V: err.Error()})
 		return err
 	}
 
