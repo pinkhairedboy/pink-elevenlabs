@@ -254,7 +254,7 @@ func voiceChange(inputPath, outputPath, voiceID, format string) error {
 func main() {
 	core.LoadEnv(serviceName)
 
-	core.Run(core.Config{
+	cfg := core.Config{
 		Name:    serviceName,
 		Version: version,
 		Usage: fmt.Sprintf(`pink-elevenlabs v%s - Text-to-speech and voice transformation using ElevenLabs API
@@ -290,7 +290,9 @@ Voice options:
 				Run:  cmdVoice,
 			},
 		},
-	}, nil) // nil main = CLI-only tool
+	}
+	core.HandleActions(&cfg, nil, nil)
+	core.Run(cfg, nil)
 }
 
 func cmdTTS(args []string) error {
