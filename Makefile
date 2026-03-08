@@ -6,3 +6,6 @@ build:
 
 install: build
 	cp pink-elevenlabs $(INSTALL_DIR)/pink-elevenlabs
+
+setup:
+	git config core.hooksPath .githooks

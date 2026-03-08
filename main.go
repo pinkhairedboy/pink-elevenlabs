@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	_ "embed"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -16,6 +17,9 @@ import (
 	"github.com/pink-tools/pink-core"
 	"github.com/pink-tools/pink-core/log"
 )
+
+//go:embed context.md
+var claudeContext string
 
 var version = "dev"
 
@@ -257,6 +261,7 @@ func main() {
 	cfg := core.Config{
 		Name:    serviceName,
 		Version: version,
+		Context: claudeContext,
 		Usage: fmt.Sprintf(`pink-elevenlabs v%s - Text-to-speech and voice transformation using ElevenLabs API
 
 Usage:
