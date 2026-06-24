@@ -5,7 +5,7 @@ pink-elevenlabs
 .env
 
 # AI docs (local only)
-ai-docs/
+ai-docs
 
 # macOS
 .DS_Store
